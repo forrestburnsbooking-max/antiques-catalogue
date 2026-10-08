@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Antiques Catalogue</title>
+<style>
+:root { --bg:#f7f4ee; --card:#fffdf9; --ink:#26231e; --muted:#7b7468; --line:#e6dfd2; --accent:#2f5d50; --accent-soft:#e4eee9; --warn:#b4531f; --warn-soft:#fbeadd; --gold:#a07a2c; --radius:12px; }
+* { box-sizing: border-box; }
+html { color-scheme: light; }
+body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.5 -apple-system,"SF Pro Text","Helvetica Neue",Arial,sans-serif; }
+a { color:var(--accent); }
+header { position:sticky; top:0; z-index:5; background:rgba(247,244,238,.94); backdrop-filter:blur(8px); border-bottom:1px solid var(--line); }
+.bar { max-width:1100px; margin:0 auto; padding:10px 16px; display:flex; align-items:center; gap:12px; }
+.brand { font:600 18px Georgia,"Times New Roman",serif; margin-right:auto; }
+nav { display:flex; gap:4px; }
+nav a { text-decoration:none; color:var(--muted); padding:6px 12px; border-radius:999px; font-weight:500; }
+nav a.on { background:var(--ink); color:#fff; }
+.lang { border:1px solid var(--line); background:var(--card); border-radius:999px; padding:5px 11px; font:inherit; font-size:13px; font-weight:600; cursor:pointer; color:var(--ink); }
+main { max-width:1100px; margin:0 auto; padding:20px 16px 80px; }
+h1 { font:600 26px Georgia,serif; margin:4px 0 16px; }
+h2 { font:600 13px -apple-system,sans-serif; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); margin:26px 0 10px; }
+.tiles { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; }
+.tile { background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:14px 16px; }
+.tile b { display:block; font:600 28px Georgia,serif; line-height:1.1; }
+.tile span { color:var(--muted); font-size:13px; }
+.tile.hl { background:var(--accent); border-color:var(--accent); color:#fff; } .tile.hl span { color:#cfe3da; }
+.grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(190px,1fr)); gap:12px; }
+.item { background:var(--card); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden; text-decoration:none; color:inherit; display:block; transition:transform .12s, box-shadow .12s; }
+.item:hover { transform:translateY(-2px); box-shadow:0 6px 18px rgba(60,45,20,.10); }
+.item .ph { aspect-ratio:4/3; background:#ebe5d8; position:relative; overflow:hidden; }
+.item .ph img { width:100%; height:100%; object-fit:cover; display:block; }
+.item .ph .badge { position:absolute; top:8px; left:8px; }
+.item .meta { padding:10px 12px 12px; }
+.item .id { font:600 12px ui-monospace,Menlo,monospace; color:var(--muted); }
+.item .t { font-weight:600; margin:2px 0 4px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; min-height:2.9em; }
+.item .p { color:var(--gold); font-weight:600; }
+.badge { display:inline-block; font-size:12px; font-weight:600; padding:2px 9px; border-radius:999px; background:rgba(255,255,255,.92); color:var(--ink); border:1px solid rgba(0,0,0,.06); }
+.badge.accent { background:var(--accent-soft); color:var(--accent); border-color:transparent; }
+.chips { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px; }
+.chip { border:1px solid var(--line); background:var(--card); color:var(--ink); border-radius:999px; padding:5px 12px; font:inherit; font-size:14px; cursor:pointer; text-decoration:none; }
+.chip.on { background:var(--ink); color:#fff; border-color:var(--ink); } .chip small { color:var(--muted); margin-left:4px; } .chip.on small { color:#bbb; }
+input, button { font:inherit; }
+input[type=text], input[type=number], input[type=password] { width:100%; padding:8px 10px; border:1px solid var(--line); border-radius:8px; background:#fff; color:var(--ink); }
+.search { max-width:420px; margin-bottom:12px; }
+.btn { background:var(--accent); color:#fff; border:0; border-radius:8px; padding:8px 16px; font-weight:600; cursor:pointer; }
+.btn.ghost { background:transparent; color:var(--accent); border:1px solid var(--accent); }
+.panel { background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:16px 18px; margin-bottom:14px; }
+.panel h3 { margin:0 0 10px; font:600 16px Georgia,serif; }
+table { border-collapse:collapse; width:100%; }
+th, td { text-align:left; padding:7px 8px; border-bottom:1px solid var(--line); vertical-align:top; }
+th { color:var(--muted); font-weight:500; font-size:13px; }
+td.n, th.n { text-align:right; white-space:nowrap; font-variant-numeric:tabular-nums; }
+.bar2 { display:inline-block; height:10px; background:var(--accent); border-radius:3px; vertical-align:middle; margin-right:6px; min-width:3px; }
+.item-layout { display:grid; grid-template-columns:minmax(0,5fr) minmax(0,6fr); gap:20px; align-items:start; }
+@media (max-width:800px) { .item-layout { grid-template-columns:1fr; } .bar { gap:6px; } .brand { font-size:15px; } nav a { padding:6px 8px; font-size:14px; } }
+.gallery .main { width:100%; border-radius:var(--radius); border:1px solid var(--line); background:#ebe5d8; display:block; min-height:200px; cursor:zoom-in; }
+.gallery .thumbs { display:grid; grid-template-columns:repeat(5,1fr); gap:6px; margin-top:8px; }
+.gallery .thumbs img { width:100%; aspect-ratio:1; object-fit:cover; border-radius:8px; border:2px solid transparent; cursor:pointer; background:#ebe5d8; }
+.gallery .thumbs img.on { border-color:var(--accent); }
+.kv { display:grid; grid-template-columns:140px 1fr; gap:6px 12px; }
+.kv .k { color:var(--muted); font-size:13px; padding-top:2px; }
+@media (max-width:800px) { .kv { grid-template-columns:1fr; gap:1px; } .kv .k { margin-top:8px; } }
+.flag { background:var(--warn-soft); color:var(--warn); border-radius:8px; padding:8px 10px; margin:6px 0; }
+.good { background:var(--accent-soft); color:var(--accent); border-radius:8px; padding:8px 10px; margin:6px 0; }
+ul.plain { margin:4px 0; padding-left:20px; }
+.muted { color:var(--muted); }
+.price-big { font:600 28px Georgia,serif; color:var(--gold); }
+.listing-box { white-space:pre-wrap; background:#fff; border:1px solid var(--line); border-radius:8px; padding:10px 12px; font-size:14px; }
+details summary { cursor:pointer; font-weight:600; margin:6px 0; }
+.empty { color:var(--muted); padding:30px 0; text-align:center; }
+.lightbox { position:fixed; inset:0; background:rgba(20,18,14,.92); display:none; align-items:center; justify-content:center; z-index:30; }
+.lightbox.show { display:flex; } .lightbox img { max-width:96vw; max-height:94vh; }
+.gate { min-height:100vh; display:grid; place-items:center; }
+.gate form { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:28px; width:min(340px,90vw); }
+.gate h1 { margin:0 0 6px; font-size:24px; } .gate p { margin:0 0 14px; color:var(--muted); }
+.gate input { margin-bottom:10px; } .gate .btn { width:100%; padding:10px; } #err { color:var(--warn); min-height:1.3em; margin-top:8px; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<div class="lightbox" id="lb"><img alt=""></div>
+<script>
+"use strict";
+const $ = (s, r = document) => r.querySelector(s);
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const store = { get(k) { try { return localStorage.getItem(k); } catch { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch {} }, del(k) { try { localStorage.removeItem(k); } catch {} } };
+
+/* ---------- переводы интерфейса ---------- */
+const T = {
+  ru: {
+    title: "Каталог антиквариата", nav_today: "Сегодня", nav_catalog: "Каталог", nav_collection: "Коллекция",
+    pass_title: "Каталог", pass_hint: "Введите пароль, который вам прислали", pass_ph: "Пароль", enter: "Войти", wrong: "Неверный пароль", loading: "Загрузка…",
+    added_today: "принято сегодня", analyzed: "оценено ИИ", listed: "выставлено", sold: "продано",
+    total: "Всего", items_n: "вещей в каталоге", est_all: "оценка коллекции", flow: "Путь вещей", today_items: "Принято сегодня", nothing_today: "Сегодня ещё ничего.", last14: "Последние 14 дней",
+    day: "День", added: "Принято", appraised: "Оценено",
+    catalog: "Каталог", search: "Поиск: номер, название, автор…", all: "Все", not_found: "Ничего не найдено", analyzing: "Ещё без анализа",
+    back: "← Каталог", photos_none: "Фото нет", status: "Статус", expert: "эксперт",
+    f_maker: "Автор/мастер", f_category: "Категория", f_date: "Датировка", f_origin: "Происхождение", f_materials: "Материал", f_dimensions: "Размеры", f_condition: "Состояние", f_location: "Где лежит", f_consignor: "Чья вещь", f_age: "Старше 100 лет", f_permit: "Разрешение на вывоз", f_notes: "Заметки",
+    yes: "Да", no: "Нет", undetermined: "Не определено", unknown: "Не проверено", not_needed: "Не нужно", needed: "Нужно", applied: "Подано", granted: "Получено",
+    valuations: "Оценки", by_ai: "ИИ", by_human: "человек", none: "Нет", listed_h: "Выставлено", nowhere: "Пока нигде", link: "ссылка",
+    ai_card: "Карточка ИИ", no_card: "Карточки ИИ пока нет.", en_listing: "Объявление на английском", copy: "Скопировать", copied: "Скопировано",
+    maker: "Автор/мастер", confidence: "уверенность", dating: "Датировка", read: "Прочитано", ai_price: "Цена по мнению ИИ", comparables: "Аналоги", authenticity: "Подлинность", risks: "Риски продажи", need_expert: "Нужен эксперт", missing: "Доснять", where_sell: "Где продавать", shipping: "Доставка", hs: "Таможенный код",
+    coll_title: "Оценка коллекции", coll_total: "итого по отмеченным", coll_mid: "середина диапазона", coll_cnt: "вещей в сумме из {n} оценённых", coll_unpriced: "без оценки",
+    min_title: "Минимальная цена вещи", min_hint: "(считать только вещи, у которых середина оценки не ниже порога)", min_ph: "например, 300", min_all: "все", min_from: "от {v}", below: "Ниже порога и не вошло в сумму: {n} шт. ({r})",
+    by_cat: "По категориям", things: "Вещи", cat_h: "Категория", count_h: "Вещей", est_h: "Оценка", lot_h: "Лот", sel_all: "Отметить все", sel_none: "Снять все", nothing_fits: "Ничего не подходит", no_analysis: "без анализа",
+    coll_note: "Берётся последняя оценка каждой вещи (человека, если есть, иначе ИИ). Оценка ИИ ориентировочная: без клейма, подписи и осмотра точной она не бывает.",
+    updated: "Обновлено", no_price: "Оценки пока нет", human_est: "оценка человека", ai_est: "оценка ИИ",
+  },
+  en: {
+    title: "Antiques Catalogue", nav_today: "Today", nav_catalog: "Catalogue", nav_collection: "Collection",
+    pass_title: "Catalogue", pass_hint: "Enter the password you were sent", pass_ph: "Password", enter: "Enter", wrong: "Wrong password", loading: "Loading…",
+    added_today: "added today", analyzed: "appraised by AI", listed: "listed", sold: "sold",
+    total: "Overall", items_n: "items in the catalogue", est_all: "collection estimate", flow: "Pipeline", today_items: "Added today", nothing_today: "Nothing yet today.", last14: "Last 14 days",
+    day: "Day", added: "Added", appraised: "Appraised",
+    catalog: "Catalogue", search: "Search: number, title, maker…", all: "All", not_found: "Nothing found", analyzing: "Not analysed yet",
+    back: "← Catalogue", photos_none: "No photos", status: "Status", expert: "expert",
+    f_maker: "Maker", f_category: "Category", f_date: "Date", f_origin: "Origin", f_materials: "Materials", f_dimensions: "Dimensions", f_condition: "Condition", f_location: "Location", f_consignor: "Owner", f_age: "Over 100 years old", f_permit: "Export permit", f_notes: "Notes",
+    yes: "Yes", no: "No", undetermined: "Not determined", unknown: "Not checked", not_needed: "Not needed", needed: "Needed", applied: "Applied", granted: "Granted",
+    valuations: "Valuations", by_ai: "AI", by_human: "human", none: "None", listed_h: "Listings", nowhere: "Not listed anywhere yet", link: "link",
+    ai_card: "AI appraisal card", no_card: "No AI card yet.", en_listing: "English listing", copy: "Copy", copied: "Copied",
+    maker: "Maker", confidence: "confidence", dating: "Dating", read: "Inscriptions read", ai_price: "AI price estimate", comparables: "Comparables", authenticity: "Authenticity", risks: "Sale risks", need_expert: "Expert needed", missing: "Still to photograph / check", where_sell: "Where to sell", shipping: "Shipping", hs: "HS code",
+    coll_title: "Collection value", coll_total: "total of selected items", coll_mid: "midpoint of range", coll_cnt: "items in the total, out of {n} valued", coll_unpriced: "not valued",
+    min_title: "Minimum item price", min_hint: "(count only items whose estimate midpoint is at or above the threshold)", min_ph: "e.g. 300", min_all: "all", min_from: "from {v}", below: "Below threshold, not in the total: {n} item(s) ({r})",
+    by_cat: "By category", things: "Items", cat_h: "Category", count_h: "Items", est_h: "Estimate", lot_h: "Lot", sel_all: "Select all", sel_none: "Clear all", nothing_fits: "Nothing matches", no_analysis: "not analysed",
+    coll_note: "The latest valuation of each item is used (a human one if present, otherwise AI). AI valuations are indicative: without a mark, signature and hands-on inspection they cannot be exact.",
+    updated: "Updated", no_price: "No valuation yet", human_est: "human valuation", ai_est: "AI valuation",
+  },
+};
+const STAGES = ["intake", "researched", "priced", "listed", "sold", "shipped", "withdrawn"];
+const STAGE_T = {
+  ru: { intake: "Принято", researched: "Исследовано", priced: "Оценено", listed: "Выставлено", sold: "Продано", shipped: "Отправлено", withdrawn: "Снято с продажи" },
+  en: { intake: "Received", researched: "Researched", priced: "Valued", listed: "Listed", sold: "Sold", shipped: "Shipped", withdrawn: "Withdrawn" },
+};
+let lang = store.get("lang") || ((navigator.language || "en").toLowerCase().startsWith("ru") ? "ru" : "en");
+const t = (k, v) => { let s = T[lang][k] ?? k; if (v) for (const [a, b] of Object.entries(v)) s = s.replace(`{${a}}`, b); return s; };
+const locale = () => (lang === "ru" ? "ru-RU" : "en-GB");
+const eur = (n) => "€" + Math.round(n).toLocaleString(locale());
+const range = (lo, hi) => (!hi ? "—" : lo && lo !== hi ? `${eur(lo)}–${eur(hi)}` : eur(hi));
+const localDay = (iso) => new Date(iso).toLocaleDateString("sv");
+const fmtTime = (iso) => new Date(iso).toLocaleString(locale(), { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
+const fmtDay = (d) => new Date(d + "T12:00").toLocaleDateString(locale(), { weekday: "short", day: "numeric", month: "long" });
+const stageName = (s) => STAGE_T[lang][s] || s;
+const stageBadge = (s) => `<span class="badge ${s === "sold" ? "accent" : ""}">${esc(stageName(s))}</span>`;
+
+/* ---------- шифрование ---------- */
+let KEY = null, DATA = null;
+const enc = new TextEncoder();
+async function deriveKey(pw, salt) {
+  const base = await crypto.subtle.importKey("raw", enc.encode(pw), "PBKDF2", false, ["deriveKey"]);
+  return crypto.subtle.deriveKey({ name: "PBKDF2", salt, iterations: 250000, hash: "SHA-256" }, base, { name: "AES-GCM", length: 256 }, false, ["decrypt"]);
+}
+const decryptBuf = (buf, key) => crypto.subtle.decrypt({ name: "AES-GCM", iv: buf.slice(0, 12) }, key, buf.slice(12));
+const blobCache = new Map();
+async function blobUrl(path) {
+  if (blobCache.has(path)) return blobCache.get(path);
+  const p = (async () => {
+    const r = await fetch(path);
+    if (!r.ok) throw new Error(path);
+    const plain = await decryptBuf(new Uint8Array(await r.arrayBuffer()), KEY);
+    return URL.createObjectURL(new Blob([plain], { type: "image/jpeg" }));
+  })();
+  blobCache.set(path, p);
+  return p;
+}
+const io = "IntersectionObserver" in window ? new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { io.unobserve(e.target); fill(e.target); } }), { rootMargin: "300px" }) : null;
+function fill(img) { blobUrl(img.dataset.enc).then((u) => (img.src = u)).catch(() => {}); }
+function hydrate(root = document) { root.querySelectorAll("img[data-enc]:not([src])").forEach((img) => (io ? io.observe(img) : fill(img))); }
+const imgPath = (id, seq, thumb) => `img/${id}/${String(seq).padStart(2, "0")}${thumb ? "t" : ""}.enc`;
+
+/* ---------- вход ---------- */
+async function unlock(pw) {
+  const r = await fetch("data/catalog.enc", { cache: "no-cache" });
+  if (!r.ok) throw new Error("no data");
+  const buf = new Uint8Array(await r.arrayBuffer());
+  const key = await deriveKey(pw, buf.slice(0, 16));
+  const plain = await decryptBuf(buf.slice(16), key);
+  KEY = key;
+  DATA = JSON.parse(new TextDecoder().decode(plain));
+}
+function gate(msg) {
+  document.title = t("title");
+  $("#root").innerHTML = `<div class="gate"><form id="f"><h1>${esc(t("pass_title"))}</h1><p>${esc(t("pass_hint"))}</p>
+    <input id="pw" type="password" placeholder="${esc(t("pass_ph"))}" autofocus autocomplete="current-password"><button class="btn">${esc(t("enter"))}</button><div id="err">${esc(msg || "")}</div></form></div>`;
+  $("#f").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const pw = $("#pw").value;
+    $("#err").textContent = t("loading");
+    try { await unlock(pw); store.set("pw", pw); start(); } catch { $("#err").textContent = t("wrong"); }
+  });
+}
+
+/* ---------- данные ---------- */
+const L = (it) => it[lang] || it.ru;
+const title = (it) => L(it).title || (L(it).card ? "" : t("analyzing"));
+const latest = (it) => it.price;
+function itemCard(it) {
+  return `<a class="item" href="#/item/${it.id}"><div class="ph"><img data-enc="${imgPath(it.id, 1, true)}" alt="">${stageBadge(it.stage)}</div>
+    <div class="meta"><div class="id">${it.id}</div><div class="t">${esc(title(it))}</div><div class="p">${it.price ? range(it.price.low, it.price.high) : '<span class="muted">—</span>'}</div></div></a>`;
+}
+
+/* ---------- страницы ---------- */
+const app = () => $("#app");
+function viewToday() {
+  const items = DATA.items;
+  const today = localDay(new Date().toISOString());
+  const days = {};
+  const bump = (iso, k) => { if (!iso) return; const d = localDay(iso); (days[d] ??= { created: 0, analyzed: 0, listed: 0, sold: 0 })[k]++; };
+  for (const it of items) { bump(it.createdAt, "created"); bump(it.analysisAt, "analyzed"); it.listings.forEach((l) => bump(l.at, "listed")); }
+  const td = days[today] || { created: 0, analyzed: 0, listed: 0, sold: 0 };
+  const priced = items.filter((i) => i.price);
+  const lo = priced.reduce((a, i) => a + i.price.low, 0), hi = priced.reduce((a, i) => a + i.price.high, 0);
+  const counts = {}; items.forEach((i) => (counts[i.stage] = (counts[i.stage] || 0) + 1));
+  const rows = Object.entries(days).sort((a, b) => b[0].localeCompare(a[0])).slice(0, 14);
+  const maxC = Math.max(1, ...rows.map(([, d]) => d.created));
+  const todayItems = items.filter((i) => localDay(i.createdAt) === today);
+  app().innerHTML = `<h1>${esc(fmtDay(today))}</h1>
+    <div class="tiles"><div class="tile hl"><b>${td.created}</b><span>${t("added_today")}</span></div><div class="tile"><b>${td.analyzed}</b><span>${t("analyzed")}</span></div><div class="tile"><b>${td.listed}</b><span>${t("listed")}</span></div></div>
+    <h2>${t("total")}</h2>
+    <div class="tiles"><div class="tile"><b>${items.length}</b><span>${t("items_n")}</span></div><div class="tile"><b style="font-size:21px;padding:5px 0">${range(lo, hi)}</b><span><a href="#/collection">${t("est_all")}</a></span></div></div>
+    <h2>${t("flow")}</h2><div class="chips">${STAGES.filter((k) => counts[k]).map((k) => `<a class="chip" href="#/catalog/${k}">${esc(stageName(k))}<small>${counts[k]}</small></a>`).join("")}</div>
+    <h2>${t("today_items")}</h2>${todayItems.length ? `<div class="grid">${todayItems.map(itemCard).join("")}</div>` : `<div class="empty">${t("nothing_today")}</div>`}
+    <h2>${t("last14")}</h2><div class="panel"><table><tr><th>${t("day")}</th><th>${t("added")}</th><th class="n">${t("appraised")}</th><th class="n">${t("listed")}</th></tr>
+    ${rows.map(([d, v]) => `<tr><td>${esc(fmtDay(d))}</td><td><span class="bar2" style="width:${(v.created / maxC) * 120}px"></span>${v.created}</td><td class="n">${v.analyzed}</td><td class="n">${v.listed}</td></tr>`).join("")}</table></div>
+    <p class="muted">${t("updated")}: ${fmtTime(DATA.generatedAt)}</p>`;
+}
+
+let catQ = "";
+function viewCatalog(stage) {
+  const all = DATA.items;
+  const items = stage ? all.filter((i) => i.stage === stage) : all;
+  const counts = {}; all.forEach((i) => (counts[i.stage] = (counts[i.stage] || 0) + 1));
+  app().innerHTML = `<h1>${t("catalog")}</h1><input class="search" id="q" type="text" placeholder="${esc(t("search"))}" value="${esc(catQ)}">
+    <div class="chips"><a class="chip ${!stage ? "on" : ""}" href="#/catalog">${t("all")}<small>${all.length}</small></a>${STAGES.filter((k) => counts[k]).map((k) => `<a class="chip ${stage === k ? "on" : ""}" href="#/catalog/${k}">${esc(stageName(k))}<small>${counts[k]}</small></a>`).join("")}</div>
+    <div class="grid" id="grid"></div>`;
+  const draw = () => {
+    const q = catQ.toLowerCase();
+    const list = items.filter((i) => !q || [i.id, L(i).title, L(i).maker, L(i).category, L(i).location].join(" ").toLowerCase().includes(q));
+    $("#grid").innerHTML = list.length ? list.map(itemCard).join("") : `<div class="empty" style="grid-column:1/-1">${t("not_found")}</div>`;
+    hydrate($("#grid"));
+  };
+  $("#q").addEventListener("input", (e) => { catQ = e.target.value; draw(); });
+  draw();
+}
+
+const picked = new Set(); let pickedInit = false; let minPrice = 0;
+function viewCollection(arg) {
+  if (arg !== undefined && arg !== "") minPrice = Math.max(0, Number(arg) || 0);
+  const items = DATA.items.filter((i) => i.stage !== "withdrawn");
+  if (!pickedInit) { items.forEach((i) => i.price && picked.add(i.id)); pickedInit = true; }
+  const priced = items.filter((i) => i.price).sort((a, b) => b.price.high - a.price.high);
+  const unpriced = items.filter((i) => !i.price);
+  app().innerHTML = `<h1>${t("coll_title")}</h1>
+    <div class="tiles"><div class="tile hl"><b id="tot" style="font-size:24px;padding:3px 0">—</b><span>${t("coll_total")}</span></div><div class="tile"><b id="mid" style="font-size:24px;padding:3px 0">—</b><span>${t("coll_mid")}</span></div>
+    <div class="tile"><b id="cnt">0</b><span>${t("coll_cnt", { n: priced.length })}</span></div><div class="tile"><b>${unpriced.length}</b><span>${t("coll_unpriced")}</span></div></div>
+    <div class="panel" style="margin-top:14px"><b>${t("min_title")}</b> <span class="muted">${t("min_hint")}</span>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px"><input type="number" id="minp" min="0" step="10" value="${minPrice || ""}" placeholder="${esc(t("min_ph"))}" style="max-width:150px">€
+      ${[0, 100, 300, 500, 1000, 2000].map((v) => `<button class="chip" data-min="${v}">${v ? t("min_from", { v }) : t("min_all")}</button>`).join("")}</div><div class="muted" id="below" style="margin-top:8px"></div></div>
+    <h2>${t("by_cat")}</h2><div class="panel" style="overflow-x:auto"><table id="cats"></table></div>
+    <h2>${t("things")}</h2><p style="margin:0 0 10px"><button class="btn ghost" id="all">${t("sel_all")}</button> <button class="btn ghost" id="none">${t("sel_none")}</button></p>
+    <div class="panel" style="overflow-x:auto"><table><tr><th></th><th>${t("lot_h")}</th><th>${t("cat_h")}</th><th class="n">${t("est_h")}</th></tr>
+    ${[...priced, ...unpriced].map((i) => `<tr data-row="${i.id}"><td><input type="checkbox" data-pick="${i.id}" ${i.price ? "" : "disabled"} ${picked.has(i.id) ? "checked" : ""}></td><td><a href="#/item/${i.id}">${i.id}</a><div class="muted">${esc(title(i) || t("no_analysis"))}</div></td><td>${esc(L(i).category || "—")}</td><td class="n">${i.price ? range(i.price.low, i.price.high) : '<span class="muted">—</span>'}</td></tr>`).join("")}</table></div>
+    <p class="muted">${t("coll_note")}</p>`;
+  const meets = (i) => (i.price.low + i.price.high) / 2 >= minPrice;
+  const recalc = () => {
+    let lo = 0, hi = 0, n = 0, bn = 0, blo = 0, bhi = 0; const cats = {};
+    for (const i of priced) {
+      const row = app().querySelector(`[data-row="${i.id}"]`); const ok = meets(i);
+      if (row) row.style.opacity = ok ? "" : ".4";
+      if (!picked.has(i.id)) continue;
+      if (!ok) { bn++; blo += i.price.low; bhi += i.price.high; continue; }
+      lo += i.price.low; hi += i.price.high; n++;
+      const c = (cats[L(i).category || "—"] ??= { n: 0, lo: 0, hi: 0 }); c.n++; c.lo += i.price.low; c.hi += i.price.high;
+    }
+    $("#tot").textContent = n ? range(lo, hi) : "—"; $("#mid").textContent = n ? eur((lo + hi) / 2) : "—"; $("#cnt").textContent = n;
+    $("#below").textContent = bn ? t("below", { n: bn, r: range(blo, bhi) }) : "";
+    app().querySelectorAll("[data-min]").forEach((b) => b.classList.toggle("on", Number(b.dataset.min) === minPrice));
+    $("#cats").innerHTML = `<tr><th>${t("cat_h")}</th><th class="n">${t("count_h")}</th><th class="n">${t("est_h")}</th></tr>` +
+      (Object.entries(cats).sort((a, b) => b[1].hi - a[1].hi).map(([k, c]) => `<tr><td>${esc(k)}</td><td class="n">${c.n}</td><td class="n">${range(c.lo, c.hi)}</td></tr>`).join("") || `<tr><td colspan="3" class="muted">${t("nothing_fits")}</td></tr>`);
+  };
+  $("#minp").addEventListener("input", (e) => { minPrice = Math.max(0, Number(e.target.value) || 0); recalc(); });
+  app().querySelectorAll("[data-min]").forEach((b) => b.addEventListener("click", () => { minPrice = Number(b.dataset.min); $("#minp").value = minPrice || ""; recalc(); }));
+  app().querySelectorAll("[data-pick]").forEach((cb) => cb.addEventListener("change", () => { cb.checked ? picked.add(cb.dataset.pick) : picked.delete(cb.dataset.pick); recalc(); }));
+  $("#all").addEventListener("click", () => { priced.forEach((i) => picked.add(i.id)); app().querySelectorAll("[data-pick]:not(:disabled)").forEach((c) => (c.checked = true)); recalc(); });
+  $("#none").addEventListener("click", () => { picked.clear(); app().querySelectorAll("[data-pick]").forEach((c) => (c.checked = false)); recalc(); });
+  recalc();
+}
+
+function cardHtml(c) {
+  const list = (a) => `<ul class="plain">${a.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>`;
+  let h = `<p>${esc(c.summary)}</p>`;
+  h += `<p><b>${t("maker")}:</b> ${esc(c.maker.name)} <span class="muted">(${t("confidence")}: ${esc(c.maker.confidence)})</span><br><span class="muted">${esc(c.maker.reasoning)}</span></p>`;
+  h += `<p><b>${t("dating")}:</b> ${esc(c.date.label)}<br><span class="muted">${esc(c.date.reasoning)}</span></p>`;
+  if (c.inscriptions.length) h += `<p><b>${t("read")}:</b></p>${list(c.inscriptions)}`;
+  h += `<p><b>${t("ai_price")}:</b> ${range(c.price.low_eur, c.price.high_eur)} <span class="muted">(${t("confidence")}: ${esc(c.price.confidence)})</span><br><span class="muted">${esc(c.price.basis)}</span></p>`;
+  if (c.comparables.length) h += `<p><b>${t("comparables")}:</b></p><ul class="plain">${c.comparables.map((x) => `<li>${/^https?:\/\//.test(x.url) ? `<a href="${esc(x.url)}" target="_blank" rel="noopener noreferrer">${esc(x.title)}</a>` : esc(x.title)} — ${esc(x.price)} <span class="muted">(${esc(x.kind)}, ${esc(x.venue)}${x.date ? ", " + esc(x.date) : ""})</span></li>`).join("")}</ul>`;
+  if (c.authenticity_flags.length) h += `<div class="flag"><b>${t("authenticity")}:</b>${list(c.authenticity_flags)}</div>`;
+  if (c.legal_flags.length) h += `<div class="flag"><b>${t("risks")}:</b>${list(c.legal_flags)}</div>`;
+  if (c.expert.needed) h += `<div class="flag"><b>${t("need_expert")}:</b> ${esc(c.expert.reason)}</div>`;
+  if (c.missing_shots.length) h += `<div class="good"><b>${t("missing")}:</b>${list(c.missing_shots)}</div>`;
+  if (c.channels.length) h += `<p><b>${t("where_sell")}:</b></p>${list(c.channels)}`;
+  h += `<p><b>${t("shipping")}:</b> ${esc(c.shipping)}${c.hs_code ? `<br><span class="muted">${t("hs")}: ${esc(c.hs_code)}</span>` : ""}</p>`;
+  return h;
+}
+
+function viewItem(id) {
+  const it = DATA.items.find((i) => i.id === id);
+  if (!it) { app().innerHTML = `<div class="empty">${t("not_found")}</div>`; return; }
+  const d = L(it), c = d.card;
+  const kv = (k, v) => (v ? `<div class="k">${t(k)}</div><div>${esc(v)}</div>` : "");
+  const permit = { unknown: "unknown", not_needed: "not_needed", needed: "needed", applied: "applied", granted: "granted" }[it.exportPermit];
+  const age = it.ageOver100 === null ? t("undetermined") : it.ageOver100 ? t("yes") : t("no");
+  const price = it.price ? `<div class="price-big">${range(it.price.low, it.price.high)}</div><div class="muted">${it.price.source === "human" ? t("human_est") : t("ai_est")}, ${fmtTime(it.price.at)}</div>` : `<div class="muted">${t("no_price")}</div>`;
+  app().innerHTML = `<p><a href="#/catalog">${t("back")}</a></p>
+    <div class="item-layout"><div class="gallery">
+      <img class="main" id="main" data-enc="${imgPath(it.id, 1, false)}" alt="">
+      <div class="thumbs">${Array.from({ length: it.photos }, (_, n) => `<img data-enc="${imgPath(it.id, n + 1, true)}" data-full="${imgPath(it.id, n + 1, false)}" class="${n ? "" : "on"}" alt="">`).join("")}</div></div>
+    <div>
+      <div class="panel"><div style="display:flex;justify-content:space-between;align-items:center"><span class="muted" style="font:600 13px ui-monospace,Menlo,monospace">${it.id}</span>${stageBadge(it.stage)}</div>
+        <h1 style="margin:6px 0 10px;font-size:22px">${esc(d.title || "")}</h1>${price}</div>
+      <div class="panel"><div class="kv">${kv("f_maker", d.maker)}${kv("f_category", d.category)}${kv("f_date", d.dateLabel)}${kv("f_origin", d.origin)}${kv("f_materials", d.materials)}${kv("f_dimensions", d.dimensions)}${kv("f_condition", d.condition)}${kv("f_location", d.location)}${kv("f_consignor", d.consignor)}
+        <div class="k">${t("f_age")}</div><div>${esc(age)}</div><div class="k">${t("f_permit")}</div><div>${esc(t(permit))}</div>${kv("f_notes", d.notes)}</div></div>
+      <div class="panel"><h3>${t("valuations")}</h3><table>${it.valuations.map((v) => `<tr><td>${fmtTime(v.at)}</td><td>${v.source === "human" ? t("by_human") : t("by_ai")}</td><td class="n">${range(v.low, v.high)}</td></tr>`).join("") || `<tr><td class="muted">${t("none")}</td></tr>`}</table></div>
+      <div class="panel"><h3>${t("listed_h")}</h3>${it.listings.length ? `<table>${it.listings.map((l) => `<tr><td>${esc(l.channel)}</td><td class="n">${l.price ? eur(l.price) : ""}</td><td>${l.url && /^https?:\/\//.test(l.url) ? `<a href="${esc(l.url)}" target="_blank" rel="noopener noreferrer">${t("link")}</a>` : ""}</td></tr>`).join("")}</table>` : `<div class="muted">${t("nowhere")}</div>`}</div>
+      ${c ? `<div class="panel"><h3>${t("ai_card")}</h3>${cardHtml(c)}<details><summary>${t("en_listing")}</summary><div class="listing-box" id="lst"><b>${esc((it.en.card || c).listing_en.title)}</b>\n\n${esc((it.en.card || c).listing_en.description)}</div><button class="btn ghost" id="copy" style="margin-top:8px">${t("copy")}</button></details></div>` : `<div class="panel muted">${t("no_card")}</div>`}
+    </div></div>`;
+  const main = $("#main");
+  app().querySelectorAll(".thumbs img").forEach((th) => th.addEventListener("click", () => {
+    main.removeAttribute("src"); main.dataset.enc = th.dataset.full; fill(main);
+    app().querySelectorAll(".thumbs img").forEach((x) => x.classList.toggle("on", x === th));
+  }));
+  main.addEventListener("click", () => { if (main.src) { $("#lb img").src = main.src; $("#lb").classList.add("show"); } });
+  const copy = $("#copy");
+  if (copy) copy.addEventListener("click", async () => { try { await navigator.clipboard.writeText($("#lst").innerText); copy.textContent = t("copied"); } catch {} });
+}
+
+/* ---------- каркас ---------- */
+function start() {
+  document.title = t("title");
+  document.documentElement.lang = lang;
+  $("#root").innerHTML = `<header><div class="bar"><div class="brand">${esc(t("title"))}</div>
+    <nav><a href="#/today" data-nav="today">${t("nav_today")}</a><a href="#/catalog" data-nav="catalog">${t("nav_catalog")}</a><a href="#/collection" data-nav="collection">${t("nav_collection")}</a></nav>
+    <button class="lang" id="lang">${lang === "ru" ? "EN" : "RU"}</button></div></header><main id="app"></main>`;
+  $("#lang").addEventListener("click", () => { lang = lang === "ru" ? "en" : "ru"; store.set("lang", lang); start(); });
+  route();
+}
+function route() {
+  if (!DATA) return;
+  const [, view = "today", arg] = location.hash.split("/");
+  document.querySelectorAll("nav a").forEach((a) => a.classList.toggle("on", a.dataset.nav === (view === "item" ? "catalog" : view)));
+  window.scrollTo(0, 0);
+  if (view === "catalog") viewCatalog(arg); else if (view === "collection") viewCollection(arg); else if (view === "item") viewItem(arg); else viewToday();
+  hydrate();
+}
+window.addEventListener("hashchange", route);
+$("#lb").addEventListener("click", () => $("#lb").classList.remove("show"));
+(async () => {
+  const pw = store.get("pw");
+  if (pw) { try { await unlock(pw); return start(); } catch { store.del("pw"); } }
+  gate();
+})();
+</script>
+</body>
+</html>
