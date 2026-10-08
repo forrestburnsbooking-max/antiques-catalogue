@@ -145,7 +145,7 @@ const stageName = (s) => STAGE_T[lang][s] || s;
 const stageBadge = (s) => `<span class="badge ${s === "sold" ? "accent" : ""}">${esc(stageName(s))}</span>`;
 
 /* ---------- шифрование ---------- */
-let KEY = null, DATA = null;
+let KEY = null, DATA = null, PLAIN = false;
 const enc = new TextEncoder();
 async function deriveKey(pw, salt) {
   const base = await crypto.subtle.importKey("raw", enc.encode(pw), "PBKDF2", false, ["deriveKey"]);
@@ -154,6 +154,7 @@ async function deriveKey(pw, salt) {
 const decryptBuf = (buf, key) => crypto.subtle.decrypt({ name: "AES-GCM", iv: buf.slice(0, 12) }, key, buf.slice(12));
 const blobCache = new Map();
 async function blobUrl(path) {
+  if (PLAIN) return path;
   if (blobCache.has(path)) return blobCache.get(path);
   const p = (async () => {
     const r = await fetch(path);
@@ -167,7 +168,7 @@ async function blobUrl(path) {
 const io = "IntersectionObserver" in window ? new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { io.unobserve(e.target); fill(e.target); } }), { rootMargin: "300px" }) : null;
 function fill(img) { blobUrl(img.dataset.enc).then((u) => (img.src = u)).catch(() => {}); }
 function hydrate(root = document) { root.querySelectorAll("img[data-enc]:not([src])").forEach((img) => (io ? io.observe(img) : fill(img))); }
-const imgPath = (id, seq, thumb) => `img/${id}/${String(seq).padStart(2, "0")}${thumb ? "t" : ""}.enc`;
+const imgPath = (id, seq, thumb) => `img/${id}/${String(seq).padStart(2, "0")}${thumb ? "t" : ""}.${PLAIN ? "jpg" : "enc"}`;
 
 /* ---------- вход ---------- */
 async function unlock(pw) {
@@ -356,6 +357,10 @@ function route() {
 window.addEventListener("hashchange", route);
 $("#lb").addEventListener("click", () => $("#lb").classList.remove("show"));
 (async () => {
+  try { // открытый режим: данные лежат в catalog.json, пароль не нужен
+    const r = await fetch("data/catalog.json", { cache: "no-cache" });
+    if (r.ok) { DATA = await r.json(); PLAIN = true; return start(); }
+  } catch {}
   const pw = store.get("pw");
   if (pw) { try { await unlock(pw); return start(); } catch { store.del("pw"); } }
   gate();
