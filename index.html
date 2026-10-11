@@ -69,6 +69,22 @@ ul.plain { margin:4px 0; padding-left:20px; }
 .price-big { font:600 28px Georgia,serif; color:var(--gold); }
 .listing-box { white-space:pre-wrap; background:#fff; border:1px solid var(--line); border-radius:8px; padding:10px 12px; font-size:14px; }
 details summary { cursor:pointer; font-weight:600; margin:6px 0; }
+.types { display:grid; grid-template-columns:210px 1fr; gap:14px; align-items:stretch; }
+.types-hero { background:var(--accent); color:#fff; border-radius:var(--radius); padding:18px 20px; display:flex; flex-direction:column; justify-content:center; }
+.types-hero b { font:600 76px/1 Georgia,serif; }
+.types-hero span { color:#cfe3da; margin-top:8px; }
+.types-bars { background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:14px 18px; display:grid; gap:9px; align-content:center; }
+.trow { display:grid; grid-template-columns:minmax(120px,200px) 1fr 74px; gap:12px; align-items:center; }
+.tl { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.ti { display:inline-block; width:1.7em; }
+.tt { height:14px; background:var(--accent-soft); border-radius:4px; overflow:hidden; }
+.tf { height:100%; border-radius:0 4px 4px 0; background:#6f9a8c; transition:filter .12s; }
+.trow:first-child .tf { background:var(--accent); }
+.trow.rest .tf { background:#c4bdae; }
+.trow.rest .tl { color:var(--muted); }
+.trow:hover .tf { filter:brightness(.88); }
+.tn { text-align:right; font-variant-numeric:tabular-nums; } .tn small { color:var(--muted); margin-left:6px; }
+@media (max-width:800px) { .types { grid-template-columns:1fr; } .types-hero { flex-direction:row; align-items:baseline; gap:14px; } .types-hero b { font-size:54px; } .trow { grid-template-columns:minmax(96px,140px) 1fr 66px; gap:8px; } }
 .empty { color:var(--muted); padding:30px 0; text-align:center; }
 .lightbox { position:fixed; inset:0; background:rgba(20,18,14,.92); display:none; align-items:center; justify-content:center; z-index:30; }
 .lightbox.show { display:flex; } .lightbox img { max-width:96vw; max-height:94vh; }
@@ -93,7 +109,7 @@ const T = {
     title: "Каталог антиквариата", nav_today: "Сегодня", nav_catalog: "Каталог", nav_collection: "Коллекция",
     pass_title: "Каталог", pass_hint: "Введите пароль, который вам прислали", pass_ph: "Пароль", enter: "Войти", wrong: "Неверный пароль", loading: "Загрузка…",
     added_today: "принято сегодня", analyzed: "оценено ИИ", listed: "выставлено", sold: "продано",
-    total: "Всего", items_n: "вещей в каталоге", est_all: "оценка коллекции", flow: "Путь вещей", today_items: "Принято сегодня", nothing_today: "Сегодня ещё ничего.", last14: "Последние 14 дней",
+    by_type: "По типам вещей", rest: "Ещё категорий", total: "Всего", items_n: "предметов в каталоге", est_all: "оценка коллекции", flow: "Путь вещей", today_items: "Принято сегодня", nothing_today: "Сегодня ещё ничего.", last14: "Последние 14 дней",
     day: "День", added: "Принято", appraised: "Оценено",
     catalog: "Каталог", search: "Поиск: номер, название, автор…", all: "Все", not_found: "Ничего не найдено", analyzing: "Ещё без анализа",
     back: "← Каталог", photos_none: "Фото нет", status: "Статус", expert: "эксперт",
@@ -112,7 +128,7 @@ const T = {
     title: "Antiques Catalogue", nav_today: "Today", nav_catalog: "Catalogue", nav_collection: "Collection",
     pass_title: "Catalogue", pass_hint: "Enter the password you were sent", pass_ph: "Password", enter: "Enter", wrong: "Wrong password", loading: "Loading…",
     added_today: "added today", analyzed: "appraised by AI", listed: "listed", sold: "sold",
-    total: "Overall", items_n: "items in the catalogue", est_all: "collection estimate", flow: "Pipeline", today_items: "Added today", nothing_today: "Nothing yet today.", last14: "Last 14 days",
+    by_type: "By type", rest: "More categories", total: "Overall", items_n: "objects in the catalogue", est_all: "collection estimate", flow: "Pipeline", today_items: "Added today", nothing_today: "Nothing yet today.", last14: "Last 14 days",
     day: "Day", added: "Added", appraised: "Appraised",
     catalog: "Catalogue", search: "Search: number, title, maker…", all: "All", not_found: "Nothing found", analyzing: "Not analysed yet",
     back: "← Catalogue", photos_none: "No photos", status: "Status", expert: "expert",
@@ -201,29 +217,37 @@ function itemCard(it) {
     <div class="meta"><div class="id">${it.id}</div><div class="t">${esc(title(it))}</div><div class="p">${it.price ? range(it.price.low, it.price.high) : '<span class="muted">—</span>'}</div></div></a>`;
 }
 
+const CAT_ICON = { "Живопись": "🖼️", "Графика и гравюра": "🖋️", "Икона": "☦️", "Фарфор и керамика": "🏺", "Стекло и хрусталь": "🥂", "Серебро и металл": "🥄", "Монеты": "🪙", "Банкноты": "💶", "Медали, знаки, награды": "🎖️", "Книги и рукописи": "📚", "Фотографии и открытки": "📷", "Мебель": "🪑", "Скульптура": "🗿", "Часы": "⏰", "Украшения": "💍", "Текстиль": "🧵", "Игрушки": "🧸", "Militaria": "⚔️", "Предметы быта": "🏠", "Другое": "📦" };
+function typesChart(items, getCat, labelOf, caption, restLabel) {
+  const m = new Map();
+  for (const i of items) { const k = getCat(i) || "Другое"; m.set(k, (m.get(k) || 0) + 1); }
+  let rows = [...m].map(([k, n]) => ({ k, n })).sort((a, b) => b.n - a.n || String(a.k).localeCompare(b.k));
+  if (rows.length > 8) { const rest = rows.slice(7); rows = [...rows.slice(0, 7), { k: "", n: rest.reduce((a, r) => a + r.n, 0), rest: rest.length }]; }
+  const total = items.length, max = Math.max(1, ...rows.map((r) => r.n));
+  const bars = rows.map((r) => {
+    const label = r.rest ? `${restLabel} (${r.rest})` : labelOf(r.k);
+    const pct = total ? Math.round((r.n / total) * 100) : 0;
+    return `<div class="trow${r.rest ? " rest" : ""}" title="${esc(label)}: ${r.n} / ${total} (${pct}%)"><div class="tl"><span class="ti">${r.rest ? "➕" : CAT_ICON[r.k] || "📦"}</span>${esc(label)}</div><div class="tt"><div class="tf" style="width:${(r.n / max) * 100}%"></div></div><div class="tn"><b>${r.n}</b><small>${pct}%</small></div></div>`;
+  }).join("");
+  return `<div class="types"><div class="types-hero"><b>${total}</b><span>${esc(caption)}</span></div><div class="types-bars">${bars || '<div class="muted">—</div>'}</div></div>`;
+}
+const CAT_EN = { "Живопись": "Paintings", "Графика и гравюра": "Prints & drawings", "Икона": "Icons", "Фарфор и керамика": "Porcelain & ceramics", "Стекло и хрусталь": "Glass & crystal", "Серебро и металл": "Silver & metalware", "Монеты": "Coins", "Банкноты": "Banknotes", "Медали, знаки, награды": "Medals & badges", "Книги и рукописи": "Books & manuscripts", "Фотографии и открытки": "Photos & postcards", "Мебель": "Furniture", "Скульптура": "Sculpture", "Часы": "Clocks & watches", "Украшения": "Jewellery", "Текстиль": "Textiles", "Игрушки": "Toys", "Militaria": "Militaria", "Предметы быта": "Household items", "Другое": "Other" };
 /* ---------- страницы ---------- */
 const app = () => $("#app");
 function viewToday() {
   const items = DATA.items;
   const today = localDay(new Date().toISOString());
-  const days = {};
-  const bump = (iso, k) => { if (!iso) return; const d = localDay(iso); (days[d] ??= { created: 0, analyzed: 0, listed: 0, sold: 0 })[k]++; };
-  for (const it of items) { bump(it.createdAt, "created"); bump(it.analysisAt, "analyzed"); it.listings.forEach((l) => bump(l.at, "listed")); }
-  const td = days[today] || { created: 0, analyzed: 0, listed: 0, sold: 0 };
+  const td = { listed: items.reduce((a, it) => a + it.listings.filter((l) => localDay(l.at) === today).length, 0) };
   const priced = items.filter((i) => i.price);
   const lo = priced.reduce((a, i) => a + i.price.low, 0), hi = priced.reduce((a, i) => a + i.price.high, 0);
   const counts = {}; items.forEach((i) => (counts[i.stage] = (counts[i.stage] || 0) + 1));
-  const rows = Object.entries(days).sort((a, b) => b[0].localeCompare(a[0])).slice(0, 14);
-  const maxC = Math.max(1, ...rows.map(([, d]) => d.created));
-  const todayItems = items.filter((i) => localDay(i.createdAt) === today);
   app().innerHTML = `<h1>${esc(fmtDay(today))}</h1>
     <div class="tiles"><div class="tile hl"><b>${td.listed}</b><span>${t("listed")}</span></div></div>
     <h2>${t("total")}</h2>
     <div class="tiles"><div class="tile"><b>${items.length}</b><span>${t("items_n")}</span></div><div class="tile"><b style="font-size:21px;padding:5px 0">${range(lo, hi)}</b><span><a href="#/collection">${t("est_all")}</a></span></div></div>
+    <h2>${t("by_type")}</h2>
+    ${typesChart(items.filter((i) => i.stage !== "withdrawn"), (i) => i.ru.category, (k) => (lang === "ru" ? k : CAT_EN[k] || k), t("items_n"), t("rest"))}
     <h2>${t("flow")}</h2><div class="chips">${STAGES.filter((k) => counts[k]).map((k) => `<a class="chip" href="#/catalog/${k}">${esc(stageName(k))}<small>${counts[k]}</small></a>`).join("")}</div>
-    <h2>${t("today_items")}</h2>${todayItems.length ? `<div class="grid">${todayItems.map(itemCard).join("")}</div>` : `<div class="empty">${t("nothing_today")}</div>`}
-    <h2>${t("last14")}</h2><div class="panel"><table><tr><th>${t("day")}</th><th>${t("added")}</th><th class="n">${t("appraised")}</th><th class="n">${t("listed")}</th></tr>
-    ${rows.map(([d, v]) => `<tr><td>${esc(fmtDay(d))}</td><td><span class="bar2" style="width:${(v.created / maxC) * 120}px"></span>${v.created}</td><td class="n">${v.analyzed}</td><td class="n">${v.listed}</td></tr>`).join("")}</table></div>
     <p class="muted">${t("updated")}: ${fmtTime(DATA.generatedAt)}</p>`;
 }
 
