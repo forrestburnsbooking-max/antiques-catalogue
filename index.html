@@ -217,7 +217,7 @@ function viewToday() {
   const maxC = Math.max(1, ...rows.map(([, d]) => d.created));
   const todayItems = items.filter((i) => localDay(i.createdAt) === today);
   app().innerHTML = `<h1>${esc(fmtDay(today))}</h1>
-    <div class="tiles"><div class="tile hl"><b>${td.created}</b><span>${t("added_today")}</span></div><div class="tile"><b>${td.analyzed}</b><span>${t("analyzed")}</span></div><div class="tile"><b>${td.listed}</b><span>${t("listed")}</span></div></div>
+    <div class="tiles"><div class="tile hl"><b>${td.listed}</b><span>${t("listed")}</span></div></div>
     <h2>${t("total")}</h2>
     <div class="tiles"><div class="tile"><b>${items.length}</b><span>${t("items_n")}</span></div><div class="tile"><b style="font-size:21px;padding:5px 0">${range(lo, hi)}</b><span><a href="#/collection">${t("est_all")}</a></span></div></div>
     <h2>${t("flow")}</h2><div class="chips">${STAGES.filter((k) => counts[k]).map((k) => `<a class="chip" href="#/catalog/${k}">${esc(stageName(k))}<small>${counts[k]}</small></a>`).join("")}</div>
