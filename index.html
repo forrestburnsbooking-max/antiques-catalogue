@@ -122,7 +122,7 @@ const T = {
     min_title: "Минимальная цена вещи", min_hint: "(считать только вещи, у которых середина оценки не ниже порога)", min_ph: "например, 300", min_all: "все", min_from: "от {v}", below: "Ниже порога и не вошло в сумму: {n} шт. ({r})",
     by_cat: "По категориям", things: "Вещи", cat_h: "Категория", count_h: "Вещей", est_h: "Оценка", lot_h: "Лот", sel_all: "Отметить все", sel_none: "Снять все", nothing_fits: "Ничего не подходит", no_analysis: "без анализа",
     coll_note: "Берётся последняя оценка каждой вещи (человека, если есть, иначе ИИ). Оценка ИИ ориентировочная: без клейма, подписи и осмотра точной она не бывает.",
-    updated: "Обновлено", no_price: "Оценки пока нет", human_est: "оценка человека", ai_est: "оценка ИИ",
+    ig_h: "Пост для Instagram", ig_ru: "Перевод на русский", ig_alt: "Alt-текст для фото", updated: "Обновлено", no_price: "Оценки пока нет", human_est: "оценка человека", ai_est: "оценка ИИ",
   },
   en: {
     title: "Antiques Catalogue", nav_today: "Overview", nav_catalog: "Catalogue", nav_collection: "Collection",
@@ -141,7 +141,7 @@ const T = {
     min_title: "Minimum item price", min_hint: "(count only items whose estimate midpoint is at or above the threshold)", min_ph: "e.g. 300", min_all: "all", min_from: "from {v}", below: "Below threshold, not in the total: {n} item(s) ({r})",
     by_cat: "By category", things: "Items", cat_h: "Category", count_h: "Items", est_h: "Estimate", lot_h: "Lot", sel_all: "Select all", sel_none: "Clear all", nothing_fits: "Nothing matches", no_analysis: "not analysed",
     coll_note: "The latest valuation of each item is used (a human one if present, otherwise AI). AI valuations are indicative: without a mark, signature and hands-on inspection they cannot be exact.",
-    updated: "Updated", no_price: "No valuation yet", human_est: "human valuation", ai_est: "AI valuation",
+    ig_h: "Instagram post", ig_ru: "Russian translation", ig_alt: "Photo alt text", updated: "Updated", no_price: "No valuation yet", human_est: "human valuation", ai_est: "AI valuation",
   },
 };
 const STAGES = ["intake", "researched", "priced", "listed", "sold", "shipped", "withdrawn"];
@@ -347,6 +347,9 @@ function viewItem(id) {
         <div class="k">${t("f_age")}</div><div>${esc(age)}</div><div class="k">${t("f_permit")}</div><div>${esc(t(permit))}</div>${kv("f_notes", d.notes)}</div></div>
       <div class="panel"><h3>${t("valuations")}</h3><table>${it.valuations.map((v) => `<tr><td>${fmtTime(v.at)}</td><td>${v.source === "human" ? t("by_human") : t("by_ai")}</td><td class="n">${range(v.low, v.high)}</td></tr>`).join("") || `<tr><td class="muted">${t("none")}</td></tr>`}</table></div>
       <div class="panel"><h3>${t("listed_h")}</h3>${it.listings.length ? `<table>${it.listings.map((l) => `<tr><td>${esc(l.channel)}</td><td class="n">${l.price ? eur(l.price) : ""}</td><td>${l.url && /^https?:\/\//.test(l.url) ? `<a href="${esc(l.url)}" target="_blank" rel="noopener noreferrer">${t("link")}</a>` : ""}</td></tr>`).join("")}</table>` : `<div class="muted">${t("nowhere")}</div>`}</div>
+      ${it.post ? `<div class="panel"><h3>${t("ig_h")}</h3><div class="listing-box" id="igcap">${esc(it.post.caption)}\n\n${esc(it.post.hashtags.map((h) => "#" + h).join(" "))}</div><button class="btn ghost" id="igcopy" style="margin-top:8px">${t("copy")}</button>
+        ${it.post.altText ? `<details><summary>${t("ig_alt")}</summary><div class="listing-box">${esc(it.post.altText)}</div></details>` : ""}
+        ${lang === "ru" && it.post.captionRu ? `<details><summary>${t("ig_ru")}</summary><div class="listing-box">${esc(it.post.captionRu)}</div></details>` : ""}</div>` : ""}
       ${c ? `<div class="panel"><h3>${t("ai_card")}</h3>${cardHtml(c)}<details><summary>${t("en_listing")}</summary><div class="listing-box" id="lst"><b>${esc((it.en.card || c).listing_en.title)}</b>\n\n${esc((it.en.card || c).listing_en.description)}</div><button class="btn ghost" id="copy" style="margin-top:8px">${t("copy")}</button></details></div>` : `<div class="panel muted">${t("no_card")}</div>`}
     </div></div>`;
   const main = $("#main");
@@ -355,6 +358,8 @@ function viewItem(id) {
     app().querySelectorAll(".thumbs img").forEach((x) => x.classList.toggle("on", x === th));
   }));
   main.addEventListener("click", () => { if (main.src) { $("#lb img").src = main.src; $("#lb").classList.add("show"); } });
+  const igcopy = $("#igcopy");
+  if (igcopy) igcopy.addEventListener("click", async () => { try { await navigator.clipboard.writeText($("#igcap").innerText); igcopy.textContent = t("copied"); } catch {} });
   const copy = $("#copy");
   if (copy) copy.addEventListener("click", async () => { try { await navigator.clipboard.writeText($("#lst").innerText); copy.textContent = t("copied"); } catch {} });
 }
