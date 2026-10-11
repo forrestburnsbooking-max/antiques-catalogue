@@ -106,7 +106,7 @@ const store = { get(k) { try { return localStorage.getItem(k); } catch { return 
 /* ---------- переводы интерфейса ---------- */
 const T = {
   ru: {
-    title: "Каталог антиквариата", nav_today: "Сегодня", nav_catalog: "Каталог", nav_collection: "Коллекция",
+    title: "Каталог антиквариата", nav_today: "Обзор", nav_catalog: "Каталог", nav_collection: "Коллекция",
     pass_title: "Каталог", pass_hint: "Введите пароль, который вам прислали", pass_ph: "Пароль", enter: "Войти", wrong: "Неверный пароль", loading: "Загрузка…",
     added_today: "принято сегодня", analyzed: "оценено ИИ", listed: "выставлено", sold: "продано",
     by_type: "По типам вещей", rest: "Ещё категорий", total: "Всего", items_n: "предметов в каталоге", est_all: "оценка коллекции", flow: "Путь вещей", today_items: "Принято сегодня", nothing_today: "Сегодня ещё ничего.", last14: "Последние 14 дней",
@@ -125,7 +125,7 @@ const T = {
     updated: "Обновлено", no_price: "Оценки пока нет", human_est: "оценка человека", ai_est: "оценка ИИ",
   },
   en: {
-    title: "Antiques Catalogue", nav_today: "Today", nav_catalog: "Catalogue", nav_collection: "Collection",
+    title: "Antiques Catalogue", nav_today: "Overview", nav_catalog: "Catalogue", nav_collection: "Collection",
     pass_title: "Catalogue", pass_hint: "Enter the password you were sent", pass_ph: "Password", enter: "Enter", wrong: "Wrong password", loading: "Loading…",
     added_today: "added today", analyzed: "appraised by AI", listed: "listed", sold: "sold",
     by_type: "By type", rest: "More categories", total: "Overall", items_n: "objects in the catalogue", est_all: "collection estimate", flow: "Pipeline", today_items: "Added today", nothing_today: "Nothing yet today.", last14: "Last 14 days",
@@ -241,8 +241,7 @@ function viewToday() {
   const priced = items.filter((i) => i.price);
   const lo = priced.reduce((a, i) => a + i.price.low, 0), hi = priced.reduce((a, i) => a + i.price.high, 0);
   const counts = {}; items.forEach((i) => (counts[i.stage] = (counts[i.stage] || 0) + 1));
-  app().innerHTML = `<h1>${esc(fmtDay(today))}</h1>
-    <div class="tiles"><div class="tile hl"><b>${td.listed}</b><span>${t("listed")}</span></div></div>
+  app().innerHTML = `<div class="tiles"><div class="tile hl"><b>${td.listed}</b><span>${t("listed")}</span></div></div>
     <h2>${t("total")}</h2>
     <div class="tiles"><div class="tile"><b>${items.length}</b><span>${t("items_n")}</span></div><div class="tile"><b style="font-size:21px;padding:5px 0">${range(lo, hi)}</b><span><a href="#/collection">${t("est_all")}</a></span></div></div>
     <h2>${t("by_type")}</h2>
