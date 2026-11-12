@@ -17,7 +17,6 @@ header { position:sticky; top:0; z-index:5; background:rgba(247,244,238,.94); ba
 nav { display:flex; gap:4px; }
 nav a { text-decoration:none; color:var(--muted); padding:6px 12px; border-radius:999px; font-weight:500; }
 nav a.on { background:var(--ink); color:#fff; }
-.lang { border:1px solid var(--line); background:var(--card); border-radius:999px; padding:5px 11px; font:inherit; font-size:13px; font-weight:600; cursor:pointer; color:var(--ink); }
 main { max-width:1100px; margin:0 auto; padding:20px 16px 80px; }
 h1 { font:600 26px Georgia,serif; margin:4px 0 16px; }
 h2 { font:600 13px -apple-system,sans-serif; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); margin:26px 0 10px; }
@@ -103,27 +102,8 @@ const $ = (s, r = document) => r.querySelector(s);
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const store = { get(k) { try { return localStorage.getItem(k); } catch { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch {} }, del(k) { try { localStorage.removeItem(k); } catch {} } };
 
-/* ---------- переводы интерфейса ---------- */
+/* ---------- interface strings ---------- */
 const T = {
-  ru: {
-    title: "Каталог антиквариата", nav_today: "Обзор", nav_catalog: "Каталог", nav_collection: "Коллекция",
-    pass_title: "Каталог", pass_hint: "Введите пароль, который вам прислали", pass_ph: "Пароль", enter: "Войти", wrong: "Неверный пароль", loading: "Загрузка…",
-    added_today: "принято сегодня", analyzed: "оценено ИИ", listed: "выставлено", sold: "продано",
-    by_type: "По типам вещей", rest: "Ещё категорий", total: "Всего", items_n: "предметов в каталоге", est_all: "оценка коллекции", flow: "Путь вещей", today_items: "Принято сегодня", nothing_today: "Сегодня ещё ничего.", last14: "Последние 14 дней",
-    day: "День", added: "Принято", appraised: "Оценено",
-    catalog: "Каталог", search: "Поиск: номер, название, автор…", all: "Все", not_found: "Ничего не найдено", analyzing: "Ещё без анализа",
-    back: "← Каталог", photos_none: "Фото нет", status: "Статус", expert: "эксперт",
-    f_maker: "Автор/мастер", f_category: "Категория", f_date: "Датировка", f_origin: "Происхождение", f_materials: "Материал", f_dimensions: "Размеры", f_condition: "Состояние", f_location: "Где лежит", f_consignor: "Чья вещь", f_age: "Старше 100 лет", f_permit: "Разрешение на вывоз", f_notes: "Заметки",
-    yes: "Да", no: "Нет", undetermined: "Не определено", unknown: "Не проверено", not_needed: "Не нужно", needed: "Нужно", applied: "Подано", granted: "Получено",
-    valuations: "Оценки", by_ai: "ИИ", by_human: "человек", none: "Нет", listed_h: "Выставлено", nowhere: "Пока нигде", link: "ссылка",
-    ai_card: "Карточка ИИ", no_card: "Карточки ИИ пока нет.", en_listing: "Объявление на английском", copy: "Скопировать", copied: "Скопировано",
-    maker: "Автор/мастер", confidence: "уверенность", dating: "Датировка", read: "Прочитано", ai_price: "Цена по мнению ИИ", comparables: "Аналоги", authenticity: "Подлинность", risks: "Риски продажи", need_expert: "Нужен эксперт", missing: "Доснять", where_sell: "Где продавать", shipping: "Доставка", hs: "Таможенный код",
-    coll_title: "Оценка коллекции", coll_total: "итого по отмеченным", coll_mid: "середина диапазона", coll_cnt: "вещей в сумме из {n} оценённых", coll_unpriced: "без оценки",
-    min_title: "Минимальная цена вещи", min_hint: "(считать только вещи, у которых середина оценки не ниже порога)", min_ph: "например, 300", min_all: "все", min_from: "от {v}", below: "Ниже порога и не вошло в сумму: {n} шт. ({r})",
-    by_cat: "По категориям", things: "Вещи", cat_h: "Категория", count_h: "Вещей", est_h: "Оценка", lot_h: "Лот", sel_all: "Отметить все", sel_none: "Снять все", nothing_fits: "Ничего не подходит", no_analysis: "без анализа",
-    coll_note: "Берётся последняя оценка каждой вещи (человека, если есть, иначе ИИ). Оценка ИИ ориентировочная: без клейма, подписи и осмотра точной она не бывает.",
-    ig_h: "Пост для Instagram", ig_ru: "Перевод на русский", ig_alt: "Alt-текст для фото", updated: "Обновлено", no_price: "Оценки пока нет", human_est: "оценка человека", ai_est: "оценка ИИ",
-  },
   en: {
     title: "Antiques Catalogue", nav_today: "Overview", nav_catalog: "Catalogue", nav_collection: "Collection",
     pass_title: "Catalogue", pass_hint: "Enter the password you were sent", pass_ph: "Password", enter: "Enter", wrong: "Wrong password", loading: "Loading…",
@@ -141,17 +121,16 @@ const T = {
     min_title: "Minimum item price", min_hint: "(count only items whose estimate midpoint is at or above the threshold)", min_ph: "e.g. 300", min_all: "all", min_from: "from {v}", below: "Below threshold, not in the total: {n} item(s) ({r})",
     by_cat: "By category", things: "Items", cat_h: "Category", count_h: "Items", est_h: "Estimate", lot_h: "Lot", sel_all: "Select all", sel_none: "Clear all", nothing_fits: "Nothing matches", no_analysis: "not analysed",
     coll_note: "The latest valuation of each item is used (a human one if present, otherwise AI). AI valuations are indicative: without a mark, signature and hands-on inspection they cannot be exact.",
-    ig_h: "Instagram post", ig_ru: "Russian translation", ig_alt: "Photo alt text", updated: "Updated", no_price: "No valuation yet", human_est: "human valuation", ai_est: "AI valuation",
+    ig_h: "Instagram post", ig_alt: "Photo alt text", updated: "Updated", no_price: "No valuation yet", human_est: "human valuation", ai_est: "AI valuation",
   },
 };
 const STAGES = ["intake", "researched", "priced", "listed", "sold", "shipped", "withdrawn"];
 const STAGE_T = {
-  ru: { intake: "Принято", researched: "Исследовано", priced: "Оценено", listed: "Выставлено", sold: "Продано", shipped: "Отправлено", withdrawn: "Снято с продажи" },
   en: { intake: "Received", researched: "Researched", priced: "Valued", listed: "Listed", sold: "Sold", shipped: "Shipped", withdrawn: "Withdrawn" },
 };
-let lang = store.get("lang") || ((navigator.language || "en").toLowerCase().startsWith("ru") ? "ru" : "en");
+const lang = "en";
 const t = (k, v) => { let s = T[lang][k] ?? k; if (v) for (const [a, b] of Object.entries(v)) s = s.replace(`{${a}}`, b); return s; };
-const locale = () => (lang === "ru" ? "ru-RU" : "en-GB");
+const locale = () => "en-GB";
 const eur = (n) => "€" + Math.round(n).toLocaleString(locale());
 const range = (lo, hi) => (!hi ? "—" : lo && lo !== hi ? `${eur(lo)}–${eur(hi)}` : eur(hi));
 const localDay = (iso) => new Date(iso).toLocaleDateString("sv");
@@ -160,7 +139,7 @@ const fmtDay = (d) => new Date(d + "T12:00").toLocaleDateString(locale(), { week
 const stageName = (s) => STAGE_T[lang][s] || s;
 const stageBadge = (s) => `<span class="badge ${s === "sold" ? "accent" : ""}">${esc(stageName(s))}</span>`;
 
-/* ---------- шифрование ---------- */
+/* ---------- encryption ---------- */
 let KEY = null, DATA = null, PLAIN = false;
 const enc = new TextEncoder();
 async function deriveKey(pw, salt) {
@@ -186,7 +165,7 @@ function fill(img) { blobUrl(img.dataset.enc).then((u) => (img.src = u)).catch((
 function hydrate(root = document) { root.querySelectorAll("img[data-enc]:not([src])").forEach((img) => (io ? io.observe(img) : fill(img))); }
 const imgPath = (id, seq, thumb) => `img/${id}/${String(seq).padStart(2, "0")}${thumb ? "t" : ""}.${PLAIN ? "jpg" : "enc"}`;
 
-/* ---------- вход ---------- */
+/* ---------- sign-in ---------- */
 async function unlock(pw) {
   const r = await fetch("data/catalog.enc", { cache: "no-cache" });
   if (!r.ok) throw new Error("no data");
@@ -208,8 +187,8 @@ function gate(msg) {
   });
 }
 
-/* ---------- данные ---------- */
-const L = (it) => it[lang] || it.ru;
+/* ---------- data ---------- */
+const L = (it) => it.info;
 const title = (it) => L(it).title || (L(it).card ? "" : t("analyzing"));
 const latest = (it) => it.price;
 function itemCard(it) {
@@ -217,10 +196,10 @@ function itemCard(it) {
     <div class="meta"><div class="id">${it.id}</div><div class="t">${esc(title(it))}</div><div class="p">${it.price ? range(it.price.low, it.price.high) : '<span class="muted">—</span>'}</div></div></a>`;
 }
 
-const CAT_ICON = { "Живопись": "🖼️", "Графика и гравюра": "🖋️", "Икона": "☦️", "Фарфор и керамика": "🏺", "Стекло и хрусталь": "🥂", "Серебро и металл": "🥄", "Монеты": "🪙", "Банкноты": "💶", "Медали, знаки, награды": "🎖️", "Книги и рукописи": "📚", "Фотографии и открытки": "📷", "Мебель": "🪑", "Скульптура": "🗿", "Часы": "⏰", "Украшения": "💍", "Текстиль": "🧵", "Игрушки": "🧸", "Militaria": "⚔️", "Предметы быта": "🏠", "Другое": "📦" };
+const CAT_ICON = { "Paintings": "🖼️", "Prints and drawings": "🖋️", "Icons": "☦️", "Porcelain and ceramics": "🏺", "Glass and crystal": "🥂", "Silver and metalware": "🥄", "Coins": "🪙", "Banknotes": "💶", "Medals and badges": "🎖️", "Books and manuscripts": "📚", "Photographs and postcards": "📷", "Furniture": "🪑", "Sculpture": "🗿", "Clocks and watches": "⏰", "Jewellery": "💍", "Textiles": "🧵", "Toys": "🧸", "Militaria": "⚔️", "Household items": "🏠", "Other": "📦" };
 function typesChart(items, getCat, labelOf, caption, restLabel) {
   const m = new Map();
-  for (const i of items) { const k = getCat(i) || "Другое"; m.set(k, (m.get(k) || 0) + 1); }
+  for (const i of items) { const k = getCat(i) || "Other"; m.set(k, (m.get(k) || 0) + 1); }
   let rows = [...m].map(([k, n]) => ({ k, n })).sort((a, b) => b.n - a.n || String(a.k).localeCompare(b.k));
   if (rows.length > 8) { const rest = rows.slice(7); rows = [...rows.slice(0, 7), { k: "", n: rest.reduce((a, r) => a + r.n, 0), rest: rest.length }]; }
   const total = items.length, max = Math.max(1, ...rows.map((r) => r.n));
@@ -231,8 +210,7 @@ function typesChart(items, getCat, labelOf, caption, restLabel) {
   }).join("");
   return `<div class="types"><div class="types-hero"><b>${total}</b><span>${esc(caption)}</span></div><div class="types-bars">${bars || '<div class="muted">—</div>'}</div></div>`;
 }
-const CAT_EN = { "Живопись": "Paintings", "Графика и гравюра": "Prints & drawings", "Икона": "Icons", "Фарфор и керамика": "Porcelain & ceramics", "Стекло и хрусталь": "Glass & crystal", "Серебро и металл": "Silver & metalware", "Монеты": "Coins", "Банкноты": "Banknotes", "Медали, знаки, награды": "Medals & badges", "Книги и рукописи": "Books & manuscripts", "Фотографии и открытки": "Photos & postcards", "Мебель": "Furniture", "Скульптура": "Sculpture", "Часы": "Clocks & watches", "Украшения": "Jewellery", "Текстиль": "Textiles", "Игрушки": "Toys", "Militaria": "Militaria", "Предметы быта": "Household items", "Другое": "Other" };
-/* ---------- страницы ---------- */
+/* ---------- pages ---------- */
 const app = () => $("#app");
 function viewToday() {
   const items = DATA.items;
@@ -245,7 +223,7 @@ function viewToday() {
     <h2>${t("total")}</h2>
     <div class="tiles"><div class="tile"><b>${items.length}</b><span>${t("items_n")}</span></div><div class="tile"><b style="font-size:21px;padding:5px 0">${range(lo, hi)}</b><span><a href="#/collection">${t("est_all")}</a></span></div></div>
     <h2>${t("by_type")}</h2>
-    ${typesChart(items.filter((i) => i.stage !== "withdrawn"), (i) => i.ru.category, (k) => (lang === "ru" ? k : CAT_EN[k] || k), t("items_n"), t("rest"))}
+    ${typesChart(items.filter((i) => i.stage !== "withdrawn"), (i) => i.info.category, (k) => k, t("items_n"), t("rest"))}
     <h2>${t("flow")}</h2><div class="chips">${STAGES.filter((k) => counts[k]).map((k) => `<a class="chip" href="#/catalog/${k}">${esc(stageName(k))}<small>${counts[k]}</small></a>`).join("")}</div>
     <p class="muted">${t("updated")}: ${fmtTime(DATA.generatedAt)}</p>`;
 }
@@ -348,9 +326,8 @@ function viewItem(id) {
       <div class="panel"><h3>${t("valuations")}</h3><table>${it.valuations.map((v) => `<tr><td>${fmtTime(v.at)}</td><td>${v.source === "human" ? t("by_human") : t("by_ai")}</td><td class="n">${range(v.low, v.high)}</td></tr>`).join("") || `<tr><td class="muted">${t("none")}</td></tr>`}</table></div>
       <div class="panel"><h3>${t("listed_h")}</h3>${it.listings.length ? `<table>${it.listings.map((l) => `<tr><td>${esc(l.channel)}</td><td class="n">${l.price ? eur(l.price) : ""}</td><td>${l.url && /^https?:\/\//.test(l.url) ? `<a href="${esc(l.url)}" target="_blank" rel="noopener noreferrer">${t("link")}</a>` : ""}</td></tr>`).join("")}</table>` : `<div class="muted">${t("nowhere")}</div>`}</div>
       ${it.post ? `<div class="panel"><h3>${t("ig_h")}</h3><div class="listing-box" id="igcap">${esc(it.post.caption)}\n\n${esc(it.post.hashtags.map((h) => "#" + h).join(" "))}</div><button class="btn ghost" id="igcopy" style="margin-top:8px">${t("copy")}</button>
-        ${it.post.altText ? `<details><summary>${t("ig_alt")}</summary><div class="listing-box">${esc(it.post.altText)}</div></details>` : ""}
-        ${lang === "ru" && it.post.captionRu ? `<details><summary>${t("ig_ru")}</summary><div class="listing-box">${esc(it.post.captionRu)}</div></details>` : ""}</div>` : ""}
-      ${c ? `<div class="panel"><h3>${t("ai_card")}</h3>${cardHtml(c)}<details><summary>${t("en_listing")}</summary><div class="listing-box" id="lst"><b>${esc((it.en.card || c).listing_en.title)}</b>\n\n${esc((it.en.card || c).listing_en.description)}</div><button class="btn ghost" id="copy" style="margin-top:8px">${t("copy")}</button></details></div>` : `<div class="panel muted">${t("no_card")}</div>`}
+        ${it.post.altText ? `<details><summary>${t("ig_alt")}</summary><div class="listing-box">${esc(it.post.altText)}</div></details>` : ""}</div>` : ""}
+      ${c ? `<div class="panel"><h3>${t("ai_card")}</h3>${cardHtml(c)}<details><summary>${t("en_listing")}</summary><div class="listing-box" id="lst"><b>${esc(c.listing_en.title)}</b>\n\n${esc(c.listing_en.description)}</div><button class="btn ghost" id="copy" style="margin-top:8px">${t("copy")}</button></details></div>` : `<div class="panel muted">${t("no_card")}</div>`}
     </div></div>`;
   const main = $("#main");
   app().querySelectorAll(".thumbs img").forEach((th) => th.addEventListener("click", () => {
@@ -364,14 +341,13 @@ function viewItem(id) {
   if (copy) copy.addEventListener("click", async () => { try { await navigator.clipboard.writeText($("#lst").innerText); copy.textContent = t("copied"); } catch {} });
 }
 
-/* ---------- каркас ---------- */
+/* ---------- shell ---------- */
 function start() {
   document.title = t("title");
   document.documentElement.lang = lang;
   $("#root").innerHTML = `<header><div class="bar"><div class="brand">${esc(t("title"))}</div>
     <nav><a href="#/today" data-nav="today">${t("nav_today")}</a><a href="#/catalog" data-nav="catalog">${t("nav_catalog")}</a><a href="#/collection" data-nav="collection">${t("nav_collection")}</a></nav>
-    <button class="lang" id="lang">${lang === "ru" ? "EN" : "RU"}</button></div></header><main id="app"></main>`;
-  $("#lang").addEventListener("click", () => { lang = lang === "ru" ? "en" : "ru"; store.set("lang", lang); start(); });
+    </div></header><main id="app"></main>`;
   route();
 }
 function route() {
@@ -385,7 +361,7 @@ function route() {
 window.addEventListener("hashchange", route);
 $("#lb").addEventListener("click", () => $("#lb").classList.remove("show"));
 (async () => {
-  try { // открытый режим: данные лежат в catalog.json, пароль не нужен
+  try { // open mode: the data is in catalog.json, no password needed
     const r = await fetch("data/catalog.json", { cache: "no-cache" });
     if (r.ok) { DATA = await r.json(); PLAIN = true; return start(); }
   } catch {}
